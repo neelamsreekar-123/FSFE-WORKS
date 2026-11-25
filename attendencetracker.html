@@ -1,0 +1,1379 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendify | Student Attendance Tracker</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+:root {
+    --bg: #101321;
+    --panel: #191e30;
+    --card: #20263a;
+    --text: #f5f6ff;
+    --muted: #9ba4bd;
+    --accent: #8b7cff;
+    --border: rgba(255,255,255,.09);
+    --green: #24c78b;
+    --red: #ff667c;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: .3s;
+}
+
+body.light {
+    --bg: #f1f4fb;
+    --panel: #ffffff;
+    --card: #ffffff;
+    --text: #202942;
+    --muted: #78839b;
+    --accent: #5269e8;
+    --border: #e5e9f2;
+}
+
+body.emerald {
+    --bg: #071c19;
+    --panel: #102b25;
+    --card: #15372e;
+    --text: #e8fff5;
+    --muted: #9cbdb0;
+    --accent: #29d69a;
+    --border: rgba(255,255,255,.09);
+}
+
+body.purple {
+    --bg: #1b102c;
+    --panel: #29183f;
+    --card: #34204e;
+    --text: #fff5ff;
+    --muted: #c1a9d4;
+    --accent: #d17cff;
+    --border: rgba(255,255,255,.1);
+}
+
+/* LOGIN */
+
+#loginPage {
+    min-height: 100vh;
+    display: flex;
+    background: white;
+    color: #17213b;
+}
+
+.login-left {
+    flex: 1.1;
+    background: linear-gradient(145deg,#101a38,#253d78);
+    color: white;
+    padding: 65px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-left:after {
+    content: "";
+    width: 450px;
+    height: 450px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 50%;
+    position: absolute;
+    right: -160px;
+    bottom: -170px;
+    box-shadow: 0 0 0 50px rgba(255,255,255,.025),
+                0 0 0 100px rgba(255,255,255,.02);
+}
+
+.brand {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.brand span {
+    color: #a99cff;
+}
+
+.login-left h1 {
+    font-size: clamp(35px,5vw,58px);
+    line-height: 1.15;
+    margin-bottom: 20px;
+}
+
+.login-left p {
+    color: #c2cbe2;
+    line-height: 1.8;
+    max-width: 450px;
+}
+
+.login-right {
+    flex: .9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h2 {
+    font-size: 30px;
+    margin-bottom: 9px;
+}
+
+.login-box > p {
+    color: #7e879b;
+    margin-bottom: 30px;
+}
+
+.login-box label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin: 17px 0 8px;
+    color: #35415d;
+}
+
+.login-box input,
+.login-box select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #dce1ec;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    background: #fafbfe;
+    color: #17213b;
+}
+
+.login-box input:focus,
+.login-box select:focus {
+    border-color: #6576ee;
+}
+
+.primary-btn {
+    width: 100%;
+    border: none;
+    padding: 15px;
+    margin-top: 25px;
+    background: #5369e9;
+    color: white;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.primary-btn:hover {
+    background: #4055d1;
+    transform: translateY(-2px);
+}
+
+.login-error {
+    color: #e43f5c;
+    font-size: 13px;
+    margin-top: 13px;
+}
+
+.demo {
+    margin-top: 22px;
+    padding: 13px;
+    border-radius: 9px;
+    background: #f1f4ff;
+    font-size: 12px;
+    color: #52617d;
+    line-height: 1.8;
+}
+
+/* APPLICATION */
+
+#app {
+    display: none;
+    min-height: 100vh;
+}
+
+.sidebar {
+    position: fixed;
+    width: 245px;
+    height: 100vh;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 25px 17px;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+}
+
+.side-brand {
+    font-size: 23px;
+    font-weight: 800;
+    padding: 8px 12px 35px;
+}
+
+.side-brand span {
+    color: var(--accent);
+}
+
+.menu-label {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    padding: 10px 12px;
+}
+
+.nav-btn {
+    padding: 13px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 10px;
+    text-align: left;
+    font-size: 14px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: .2s;
+    width: 100%;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: var(--accent);
+    color: white;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.main {
+    margin-left: 245px;
+    padding: 30px 35px;
+    min-height: 100vh;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+.topbar h1 {
+    font-size: 27px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.theme-select {
+    padding: 11px;
+    border-radius: 9px;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-weight: 800;
+}
+
+.profile small {
+    color: var(--muted);
+}
+
+/* CONTENT */
+
+.page {
+    display: none;
+    animation: appear .3s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.stat-card,
+.content-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 23px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.04);
+}
+
+.stat-card small {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.stat-card h2 {
+    font-size: 30px;
+    margin: 13px 0 5px;
+}
+
+.stat-card .symbol {
+    font-size: 23px;
+}
+
+.stat-card p {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.section-title {
+    font-size: 17px;
+    margin-bottom: 18px;
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.attendance-bar {
+    height: 9px;
+    background: var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.attendance-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 20px;
+}
+
+.big-percent {
+    font-size: 42px;
+    font-weight: 800;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 550px;
+}
+
+th,td {
+    text-align: left;
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+th {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+}
+
+.status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.present {
+    background: rgba(36,199,139,.14);
+    color: #24c78b;
+}
+
+.absent {
+    background: rgba(255,102,124,.14);
+    color: #ff667c;
+}
+
+.leave {
+    background: rgba(240,177,60,.14);
+    color: #e8ae42;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.toolbar input,
+.toolbar select,
+.form-control {
+    padding: 12px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    outline: none;
+}
+
+.toolbar input {
+    min-width: 220px;
+}
+
+.action-btn {
+    border: none;
+    padding: 12px 17px;
+    border-radius: 9px;
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    opacity: .85;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 17px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 13px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.secondary-btn {
+    background: var(--border);
+    color: var(--text);
+    border: none;
+    padding: 12px 18px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.empty {
+    text-align: center;
+    padding: 35px;
+    color: var(--muted);
+}
+
+.student-attendance-select {
+    padding: 8px;
+    border-radius: 7px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media(max-width:950px) {
+    .stats { grid-template-columns: repeat(2,1fr); }
+    .two-col { grid-template-columns: 1fr; }
+}
+
+@media(max-width:700px) {
+    #loginPage { flex-direction: column; }
+    .login-left { padding: 35px; min-height: 300px; }
+    .login-right { padding: 35px 22px; }
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+    .sidebar-bottom { margin-top: 15px; }
+    .main { margin-left: 0; padding: 22px 15px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .stats { gap: 10px; }
+    .stat-card { padding: 15px; }
+    .stat-card h2 { font-size: 24px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+
+<section id="loginPage">
+
+    <div class="login-left">
+        <div class="brand">ATTEND<span>IFY.</span></div>
+
+        <div>
+            <h1>Smart Attendance.<br>Smarter Campus.</h1>
+            <p>
+                A modern attendance management platform designed
+                to make student tracking simple, organized and efficient.
+            </p>
+        </div>
+
+        <p>© 2026 Attendify. Student Attendance Management System.</p>
+    </div>
+
+    <div class="login-right">
+        <div class="login-box">
+            <h2>Welcome back!</h2>
+            <p>Sign in to access your dashboard.</p>
+
+            <form id="loginForm">
+                <label>Login as</label>
+                <select id="loginRole">
+                    <option value="faculty">Faculty</option>
+                    <option value="student">Student</option>
+                </select>
+
+                <label>Email / Student ID</label>
+                <input id="loginId" placeholder="Enter your email or ID" required>
+
+                <label>Password</label>
+                <input id="loginPassword" type="password"
+                       placeholder="Enter your password" required>
+
+                <button class="primary-btn" type="submit">Sign In →</button>
+                <div id="loginError" class="login-error"></div>
+            </form>
+
+            <div class="demo">
+                <b>Demo Faculty</b><br>
+                Email: faculty@demo.com<br>
+                Password: faculty123
+                <br><br>
+                <b>Demo Student</b><br>
+                ID: 2620030478<br>
+                Password: student123
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- APPLICATION -->
+
+<div id="app">
+
+    <aside class="sidebar">
+        <div class="side-brand">ATTEND<span>IFY.</span></div>
+
+        <div class="menu-label">MAIN MENU</div>
+
+        <button class="nav-btn active" onclick="showPage('dashboard',this)">
+            ◈ &nbsp; Dashboard
+        </button>
+
+        <button class="nav-btn faculty-only" onclick="showPage('attendance',this)">
+            ▦ &nbsp; Mark Attendance
+        </button>
+
+        <button class="nav-btn" onclick="showPage('records',this)">
+            ▤ &nbsp; Attendance Records
+        </button>
+
+        <button class="nav-btn faculty-only" onclick="showPage('students',this)">
+            ♙ &nbsp; Student Directory
+        </button>
+
+        <button class="nav-btn faculty-only" onclick="showPage('addStudent',this)">
+            + &nbsp; Add New Student
+        </button>
+
+        <div class="sidebar-bottom">
+            <div class="menu-label">ACCOUNT</div>
+            <button class="nav-btn" onclick="logout()">↪ &nbsp; Logout</button>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1 id="pageHeading">Dashboard</h1>
+                <p id="welcomeText">Welcome to Attendify.</p>
+            </div>
+
+            <div class="top-actions">
+                <select class="theme-select" id="themeSelect" onchange="changeTheme(this.value)">
+                    <option value="dark">Dark Theme</option>
+                    <option value="light">Light Theme</option>
+                    <option value="emerald">Emerald Theme</option>
+                    <option value="purple">Purple Theme</option>
+                </select>
+
+                <div class="profile">
+                    <div class="avatar" id="profileAvatar">F</div>
+                    <div>
+                        <b id="profileName">Faculty</b><br>
+                        <small id="profileRole">Faculty</small>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboard" class="page active">
+
+            <div class="stats">
+                <div class="stat-card">
+                    <span class="symbol">♙</span>
+                    <small>Total Students</small>
+                    <h2 id="totalStudents">0</h2>
+                    <p>Registered students</p>
+                </div>
+
+                <div class="stat-card">
+                    <span class="symbol">✓</span>
+                    <small>Present Today</small>
+                    <h2 id="presentToday">0</h2>
+                    <p>Students present today</p>
+                </div>
+
+                <div class="stat-card">
+                    <span class="symbol">✕</span>
+                    <small>Absent Today</small>
+                    <h2 id="absentToday">0</h2>
+                    <p>Students absent today</p>
+                </div>
+
+                <div class="stat-card">
+                    <span class="symbol">◷</span>
+                    <small>Overall Attendance</small>
+                    <h2 id="overallPercent">0%</h2>
+                    <p>Based on recorded classes</p>
+                </div>
+            </div>
+
+            <div class="two-col">
+
+                <div class="content-card">
+                    <h3 class="section-title">Today's Attendance</h3>
+                    <div class="big-percent" id="todayPercent">0%</div>
+                    <p class="muted">Attendance percentage for today</p>
+                    <div class="attendance-bar">
+                        <div class="attendance-fill" id="todayBar" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="section-title">Quick Overview</h3>
+                    <p class="muted">Total registered students</p>
+                    <h2 style="font-size:35px;margin:12px 0" id="quickStudents">0</h2>
+                    <p class="muted">Use the Student Directory to manage students.</p>
+                </div>
+
+            </div>
+
+            <div class="content-card">
+                <h3 class="section-title">Recent Attendance</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Student ID</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- MARK ATTENDANCE -->
+
+        <section id="attendance" class="page faculty-only">
+
+            <div class="content-card">
+                <div class="toolbar">
+                    <div>
+                        <h3 class="section-title">Mark Student Attendance</h3>
+                        <p class="muted">Select a date and update student attendance.</p>
+                    </div>
+                    <input type="date" id="attendanceDate" class="form-control">
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Branch</th>
+                                <th>Attendance Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="markTable"></tbody>
+                    </table>
+                </div>
+
+                <button class="action-btn" onclick="saveAttendance()" style="margin-top:20px">
+                    Save Attendance
+                </button>
+                <p id="attendanceMessage" class="muted" style="margin-top:12px"></p>
+            </div>
+
+        </section>
+
+        <!-- RECORDS -->
+
+        <section id="records" class="page">
+
+            <div class="content-card">
+                <div class="toolbar">
+                    <div>
+                        <h3 class="section-title">Attendance Records</h3>
+                        <p class="muted">View all saved attendance entries.</p>
+                    </div>
+                    <input type="text" id="recordSearch"
+                           placeholder="Search student..." oninput="renderRecords()">
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- STUDENT DIRECTORY -->
+
+        <section id="students" class="page faculty-only">
+
+            <div class="content-card">
+                <div class="toolbar">
+                    <div>
+                        <h3 class="section-title">Student Directory</h3>
+                        <p class="muted">Manage all registered students.</p>
+                    </div>
+
+                    <input type="text" id="studentSearch"
+                           placeholder="Search students..." oninput="renderStudents()">
+
+                    <button class="action-btn" onclick="showPage('addStudent',null)">
+                        + Add Student
+                    </button>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Email</th>
+                                <th>Branch</th>
+                                <th>Section</th>
+                                <th>Attendance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ADD STUDENT -->
+
+        <section id="addStudent" class="page faculty-only">
+
+            <div class="content-card">
+                <h3 class="section-title">Add New Student</h3>
+                <p class="muted" style="margin-bottom:25px">
+                    Enter student information to register a new student.
+                </p>
+
+                <form id="studentForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input id="newName" required placeholder="Enter full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Student ID *</label>
+                            <input id="newId" required placeholder="Enter student ID">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input id="newEmail" type="email" required
+                                   placeholder="student@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Branch *</label>
+                            <select id="newBranch" required>
+                                <option value="">Select Branch</option>
+                                <option>CSE</option>
+                                <option>CSE - AI & ML</option>
+                                <option>CSE - Data Science</option>
+                                <option>IT</option>
+                                <option>ECE</option>
+                                <option>EEE</option>
+                                <option>Mechanical</option>
+                                <option>Civil</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Section *</label>
+                            <select id="newSection" required>
+                                <option value="">Select Section</option>
+                                <option>A</option>
+                                <option>B</option>
+                                <option>C</option>
+                                <option>D</option>
+                                <option>E</option>
+                                <option>F</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="form-buttons">
+                        <button class="action-btn" type="submit">Register Student</button>
+                        <button class="secondary-btn" type="reset">Clear Form</button>
+                    </div>
+
+                    <p id="studentMessage" class="muted" style="margin-top:18px"></p>
+
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<script>
+
+/* DATA STORAGE */
+
+const defaultStudents = [
+    {
+        name: "Neelam Sreekar",
+        id: "2620030478",
+        email: "sreekar@example.com",
+        branch: "CSE",
+        section: "A"
+    },
+    {
+        name: "Rahul Sharma",
+        id: "2620030479",
+        email: "rahul@example.com",
+        branch: "CSE",
+        section: "A"
+    },
+    {
+        name: "Priya Reddy",
+        id: "2620030480",
+        email: "priya@example.com",
+        branch: "CSE",
+        section: "B"
+    },
+    {
+        name: "Arjun Kumar",
+        id: "2620030481",
+        email: "arjun@example.com",
+        branch: "ECE",
+        section: "A"
+    }
+];
+
+let students = JSON.parse(localStorage.getItem("att_students")) || defaultStudents;
+let attendance = JSON.parse(localStorage.getItem("att_records")) || [];
+
+let currentUser = null;
+let currentRole = null;
+
+function saveData() {
+    localStorage.setItem("att_students", JSON.stringify(students));
+    localStorage.setItem("att_records", JSON.stringify(attendance));
+}
+
+function today() {
+    const d = new Date();
+    return [
+        d.getFullYear(),
+        String(d.getMonth()+1).padStart(2,"0"),
+        String(d.getDate()).padStart(2,"0")
+    ].join("-");
+}
+
+document.getElementById("attendanceDate").value = today();
+
+/* LOGIN */
+
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const role = document.getElementById("loginRole").value;
+    const id = document.getElementById("loginId").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    if (role === "faculty") {
+
+        if (id === "faculty@demo.com" && password === "faculty123") {
+            currentUser = { name: "Faculty", id: id };
+            currentRole = "faculty";
+        } else {
+            document.getElementById("loginError").textContent =
+                "Invalid faculty email or password.";
+            return;
+        }
+
+    } else {
+
+        const student = students.find(s => s.id === id);
+
+        if (student && password === "student123") {
+            currentUser = student;
+            currentRole = "student";
+        } else {
+            document.getElementById("loginError").textContent =
+                "Invalid student ID or password.";
+            return;
+        }
+    }
+
+    document.getElementById("loginError").textContent = "";
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("app").style.display = "block";
+
+    document.getElementById("profileName").textContent = currentUser.name;
+    document.getElementById("profileRole").textContent =
+        currentRole === "faculty" ? "Faculty" : "Student";
+
+    document.getElementById("profileAvatar").textContent =
+        currentUser.name.charAt(0).toUpperCase();
+
+    document.getElementById("welcomeText").textContent =
+        "Welcome back, " + currentUser.name + "!";
+
+    document.querySelectorAll(".faculty-only").forEach(el => {
+        el.classList.toggle("hidden", currentRole !== "faculty");
+    });
+
+    showPage("dashboard", document.querySelector(".nav-btn"));
+    renderAll();
+});
+
+function logout() {
+    currentUser = null;
+    currentRole = null;
+    document.getElementById("app").style.display = "none";
+    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("loginForm").reset();
+}
+
+/* NAVIGATION */
+
+const headings = {
+    dashboard: "Dashboard",
+    attendance: "Mark Attendance",
+    records: "Attendance Records",
+    students: "Student Directory",
+    addStudent: "Add New Student"
+};
+
+function showPage(page, button) {
+
+    if (currentRole === "student" &&
+        ["attendance","students","addStudent"].includes(page)) return;
+
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+
+    document.getElementById(page).classList.add("active");
+
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+
+    if (button) button.classList.add("active");
+
+    document.getElementById("pageHeading").textContent = headings[page];
+
+    if (page === "attendance") renderMarkTable();
+    if (page === "records") renderRecords();
+    if (page === "students") renderStudents();
+    if (page === "dashboard") renderDashboard();
+}
+
+/* THEMES */
+
+function changeTheme(theme) {
+    document.body.classList.remove("light","emerald","purple");
+    if (theme !== "dark") document.body.classList.add(theme);
+    localStorage.setItem("att_theme",theme);
+}
+
+const savedTheme = localStorage.getItem("att_theme") || "dark";
+document.getElementById("themeSelect").value = savedTheme;
+changeTheme(savedTheme);
+
+/* ADD STUDENT */
+
+document.getElementById("studentForm").addEventListener("submit",function(e) {
+    e.preventDefault();
+
+    const student = {
+        name: document.getElementById("newName").value.trim(),
+        id: document.getElementById("newId").value.trim(),
+        email: document.getElementById("newEmail").value.trim(),
+        branch: document.getElementById("newBranch").value,
+        section: document.getElementById("newSection").value
+    };
+
+    const duplicate = students.some(s =>
+        s.id.toLowerCase() === student.id.toLowerCase() ||
+        s.email.toLowerCase() === student.email.toLowerCase()
+    );
+
+    if (duplicate) {
+        document.getElementById("studentMessage").textContent =
+            "This student ID or email is already registered.";
+        return;
+    }
+
+    students.push(student);
+    saveData();
+
+    document.getElementById("studentMessage").textContent =
+        "Student registered successfully!";
+
+    document.getElementById("studentForm").reset();
+
+    renderAll();
+});
+
+/* ATTENDANCE */
+
+function renderMarkTable() {
+
+    const date = document.getElementById("attendanceDate").value || today();
+
+    document.getElementById("markTable").innerHTML = students.map(s => {
+
+        const record = attendance.find(a => a.id === s.id && a.date === date);
+
+        const status = record ? record.status : "Present";
+
+        return `
+            <tr>
+                <td>${escapeHTML(s.name)}</td>
+                <td>${escapeHTML(s.id)}</td>
+                <td>${escapeHTML(s.branch)}</td>
+                <td>
+                    <select class="student-attendance-select" data-id="${escapeHTML(s.id)}">
+                        <option value="Present" ${status==="Present"?"selected":""}>Present</option>
+                        <option value="Absent" ${status==="Absent"?"selected":""}>Absent</option>
+                        <option value="Leave" ${status==="Leave"?"selected":""}>Leave</option>
+                    </select>
+                </td>
+            </tr>
+        `;
+    }).join("") || `<tr><td colspan="4" class="empty">No students registered.</td></tr>`;
+}
+
+document.getElementById("attendanceDate").addEventListener("change",renderMarkTable);
+
+function saveAttendance() {
+
+    if (students.length === 0) {
+        document.getElementById("attendanceMessage").textContent =
+            "Add students before marking attendance.";
+        return;
+    }
+
+    const date = document.getElementById("attendanceDate").value;
+
+    if (!date) {
+        document.getElementById("attendanceMessage").textContent =
+            "Please select a date.";
+        return;
+    }
+
+    document.querySelectorAll(".student-attendance-select").forEach(select => {
+
+        const id = select.dataset.id;
+
+        const existing = attendance.findIndex(a =>
+            a.id === id && a.date === date
+        );
+
+        const record = {
+            id: id,
+            date: date,
+            status: select.value
+        };
+
+        if (existing >= 0) {
+            attendance[existing] = record;
+        } else {
+            attendance.push(record);
+        }
+    });
+
+    saveData();
+
+    document.getElementById("attendanceMessage").textContent =
+        "Attendance saved successfully!";
+
+    renderAll();
+}
+
+/* STUDENT DIRECTORY */
+
+function getStudentAttendance(id) {
+
+    const records = attendance.filter(a => a.id === id);
+
+    if (records.length === 0) return 0;
+
+    const present = records.filter(a => a.status === "Present").length;
+
+    return Math.round(present / records.length * 100);
+}
+
+function renderStudents() {
+
+    const search = (document.getElementById("studentSearch").value || "").toLowerCase();
+
+    const filtered = students.filter(s =>
+        [s.name,s.id,s.email,s.branch,s.section]
+        .some(v => v.toLowerCase().includes(search))
+    );
+
+    document.getElementById("studentsTable").innerHTML =
+        filtered.map(s => `
+            <tr>
+                <td><b>${escapeHTML(s.name)}</b></td>
+                <td>${escapeHTML(s.id)}</td>
+                <td>${escapeHTML(s.email)}</td>
+                <td>${escapeHTML(s.branch)}</td>
+                <td>${escapeHTML(s.section)}</td>
+                <td><span class="status present">${getStudentAttendance(s.id)}%</span></td>
+            </tr>
+        `).join("") || `<tr><td colspan="6" class="empty">No students found.</td></tr>`;
+}
+
+/* RECORDS */
+
+function statusBadge(status) {
+    const css = status.toLowerCase();
+    return `<span class="status ${css}">${escapeHTML(status)}</span>`;
+}
+
+function renderRecords() {
+
+    let list = attendance;
+
+    if (currentRole === "student") {
+        list = list.filter(a => a.id === currentUser.id);
+    }
+
+    const search = (document.getElementById("recordSearch").value || "").toLowerCase();
+
+    list = list.filter(a => {
+        const s = students.find(x => x.id === a.id);
+        return s && (s.name.toLowerCase().includes(search) || s.id.toLowerCase().includes(search));
+    });
+
+    document.getElementById("recordsTable").innerHTML =
+        [...list].reverse().map(a => {
+            const s = students.find(x => x.id === a.id);
+            if (!s) return "";
+
+            return `
+                <tr>
+                    <td>${escapeHTML(s.name)}</td>
+                    <td>${escapeHTML(s.id)}</td>
+                    <td>${escapeHTML(a.date)}</td>
+                    <td>${statusBadge(a.status)}</td>
+                </tr>
+            `;
+        }).join("") || `<tr><td colspan="4" class="empty">No attendance records found.</td></tr>`;
+}
+
+/* DASHBOARD */
+
+function renderDashboard() {
+
+    const date = today();
+
+    let visibleStudents = students;
+    let visibleAttendance = attendance;
+
+    if (currentRole === "student") {
+        visibleStudents = students.filter(s => s.id === currentUser.id);
+        visibleAttendance = attendance.filter(a => a.id === currentUser.id);
+    }
+
+    const todayRecords = visibleAttendance.filter(a => a.date === date);
+
+    const present = todayRecords.filter(a => a.status === "Present").length;
+    const absent = todayRecords.filter(a => a.status === "Absent").length;
+
+    const allPresent = visibleAttendance.filter(a => a.status === "Present").length;
+    const overall = visibleAttendance.length
+        ? Math.round(allPresent / visibleAttendance.length * 100)
+        : 0;
+
+    const todayPercentage = todayRecords.length
+        ? Math.round(present / todayRecords.length * 100)
+        : 0;
+
+    document.getElementById("totalStudents").textContent =
+        visibleStudents.length;
+
+    document.getElementById("presentToday").textContent = present;
+    document.getElementById("absentToday").textContent = absent;
+
+    document.getElementById("overallPercent").textContent = overall + "%";
+    document.getElementById("todayPercent").textContent = todayPercentage + "%";
+    document.getElementById("todayBar").style.width = todayPercentage + "%";
+
+    document.getElementById("quickStudents").textContent =
+        visibleStudents.length;
+
+    document.getElementById("recentTable").innerHTML =
+        [...visibleAttendance].reverse().slice(0,6).map(a => {
+
+            const s = students.find(x => x.id === a.id);
+            if (!s) return "";
+
+            return `
+                <tr>
+                    <td>${escapeHTML(s.name)}</td>
+                    <td>${escapeHTML(s.id)}</td>
+                    <td>${escapeHTML(a.date)}</td>
+                    <td>${statusBadge(a.status)}</td>
+                </tr>
+            `;
+        }).join("") || `<tr><td colspan="4" class="empty">No attendance data yet.</td></tr>`;
+}
+
+function renderAll() {
+    renderDashboard();
+    renderStudents();
+    renderRecords();
+    renderMarkTable();
+}
+
+/* BASIC HTML ESCAPING */
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+</script>
+
+</body>
+</html>
